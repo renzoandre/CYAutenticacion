@@ -18,7 +18,7 @@ class RouterRestTest {
     @Test
     void testListenGETUseCase() {
         webTestClient.get()
-                .uri("/api/usecase/path")
+                .uri("/api/v1/users")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()

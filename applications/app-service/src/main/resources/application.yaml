@@ -27,3 +27,12 @@ routes:
   paths:
     users: "/api/v1/users"
     user: "/api/v1/user"
+
+adapters:
+  r2dbc:
+    host: "localhost"
+    port: 5432
+    database: "db_cy_autenticacion"
+    schema: "public"
+    username: "postgres"
+    password: "postgres"
