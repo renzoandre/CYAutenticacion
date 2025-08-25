@@ -32,7 +32,7 @@ adapters:
   r2dbc:
     host: "localhost"
     port: 5432
-    database: "db_cy_autenticacion"
+    database: "db_cy_autenticacion_d"
     schema: "public"
     username: "postgres"
     password: "postgres"
