@@ -51,6 +51,12 @@ Este m�dulo es el m�s externo de la arquitectura, es el encargado de ensambl
 
 Seguir los siguientes pasos para levantar el avance de la aplicación.   
 
+## Github
+
+El avance se encuentra en la rama **feature/hu01-user** del repositorio: https://github.com/renzoandre/CYAutenticacion.
+
+La url exacta es: https://github.com/renzoandre/CYAutenticacion/tree/feature/hu01-user#
+
 ## Credenciales de BD
 
 Las credenciales aún estan en duro en el archivo **application.yaml**.
@@ -65,7 +71,7 @@ docker-compose up -d
 ```
 
 ## Probar con Postman
-Se tiene implementado 3 end point.
+Se tiene implementado 3 end point:
 
 ### Crear nuevo usuario
 Se usará la siguiente peticion POST: http://localhost:8080/api/v1/user
