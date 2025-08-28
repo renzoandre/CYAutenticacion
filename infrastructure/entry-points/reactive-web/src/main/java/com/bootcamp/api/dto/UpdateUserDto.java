@@ -25,7 +25,6 @@ public record UpdateUserDto (
         @Email(message = "El correo electrónico no es válido")
         String email,
         @NotNull(message = "Debe ingresar el salario base")
-        @NotBlank(message = "Debe ingresar el salario base")
         @Min(value = 0, message = "El salario base ser mayor a 0")
         @Max(value = 15000000, message = "El salario base debe ser menor a 15000000")
         Double baseSalary

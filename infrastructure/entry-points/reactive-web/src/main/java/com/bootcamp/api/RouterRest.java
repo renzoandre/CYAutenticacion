@@ -1,6 +1,6 @@
 package com.bootcamp.api;
 
-import com.bootcamp.api.config.UserPaths;
+import com.bootcamp.api.config.UserPathsConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +14,14 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @RequiredArgsConstructor
 public class RouterRest {
 
-    private final UserPaths userPaths;
+    private final UserPathsConfig userPathsConfig;
     private final Handler userHandler;
 
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return route(GET(userPaths.getUsers()), userHandler::findAllUsers)
-                .andRoute(POST(userPaths.getUser()), userHandler::saveUser)
-                .andRoute(PATCH(userPaths.getUser()), userHandler::updateUser);
+        return route(GET(userPathsConfig.getUsers()), userHandler::findAllUsers)
+                .andRoute(POST(userPathsConfig.getUser()), userHandler::saveUser)
+                .andRoute(PATCH(userPathsConfig.getUser()), userHandler::updateUser);
     }
 
 }

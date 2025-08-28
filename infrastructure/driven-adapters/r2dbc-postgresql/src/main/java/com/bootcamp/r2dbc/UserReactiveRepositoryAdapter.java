@@ -3,9 +3,13 @@ package com.bootcamp.r2dbc;
 import com.bootcamp.model.user.User;
 import com.bootcamp.model.user.gateways.UserRepository;
 import com.bootcamp.r2dbc.entity.UserEntity;
+import com.bootcamp.r2dbc.exception.DataValidationException;
+import com.bootcamp.r2dbc.exception.DatabaseUnavailableException;
 import com.bootcamp.r2dbc.helper.ReactiveAdapterOperations;
 import lombok.extern.java.Log;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -36,20 +40,51 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     @Override
     public Flux<User> findAllUsers() {
         log.info("UserReactiveRepositoryAdapter findAllUsers");
-        return super.findAll();
+        return super.findAll()
+                .onErrorMap(TransientDataAccessResourceException.class,
+                        ex -> new DatabaseUnavailableException("Base de datos no disponible"))
+                .onErrorMap(Exception.class,
+                        ex -> new RuntimeException("Error inesperado al guardar usuario", ex));
+    }
+
+    @Transactional
+    @Override
+    public Mono<User> findUserByEmail(String email) {
+        log.info("UserReactiveRepositoryAdapter findUserByEmail");
+        User user = new User();
+        user.setEmail(email);
+        return findByExample(user)
+                .next()
+                .switchIfEmpty(Mono.empty())
+                .onErrorMap(TransientDataAccessResourceException.class,
+                        ex -> new DatabaseUnavailableException("Base de datos no disponible"))
+                .onErrorMap(Exception.class,
+                        ex -> new RuntimeException("Error inesperado al guardar usuario", ex));
     }
 
     @Transactional
     @Override
     public Mono<User> saveUser(User user) {
         log.info("UserReactiveRepositoryAdapter saveUser" + user.toString());
-        return super.save(user);
+        return super.save(user)
+                .onErrorMap(DataIntegrityViolationException.class,
+                        ex -> new DataValidationException("Integridad de datos inválidos"))
+                .onErrorMap(TransientDataAccessResourceException.class,
+                        ex -> new DatabaseUnavailableException("Base de datos no disponible"))
+                .onErrorMap(Exception.class,
+                        ex -> new RuntimeException("Error inesperado al guardar usuario", ex));
     }
 
     @Transactional
     @Override
     public Mono<User> updateUser(User user) {
         log.info("UserReactiveRepositoryAdapter updateUser" + user.toString());
-        return super.save(user);
+        return super.save(user)
+                .onErrorMap(DataIntegrityViolationException.class,
+                        ex -> new DataValidationException("Integridad de datos inválidos"))
+                .onErrorMap(TransientDataAccessResourceException.class,
+                        ex -> new DatabaseUnavailableException("Base de datos no disponible"))
+                .onErrorMap(Exception.class,
+                        ex -> new RuntimeException("Error inesperado al actualizar usuario", ex));
     }
 }

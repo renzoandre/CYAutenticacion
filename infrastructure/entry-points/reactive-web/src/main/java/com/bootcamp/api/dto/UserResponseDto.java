@@ -2,7 +2,8 @@ package com.bootcamp.api.dto;
 
 import java.time.LocalDate;
 
-public record UserDto (
+public record UserResponseDto (
+        String id,
         String name,
         String lastName1,
         String lastName2,
@@ -10,5 +11,6 @@ public record UserDto (
         String address,
         String phone,
         String email,
-        Double baseSalary) {
-}
+        Double baseSalary,
+        boolean active
+) {}
