@@ -9,6 +9,10 @@ import com.bootcamp.api.validator.RequestValidator;
 import com.bootcamp.model.user.User;
 import com.bootcamp.usecase.user.UserUseCase;
 import com.bootcamp.usecase.user.exception.UserExistException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,12 +30,35 @@ public class Handler {
     private final UserDtoMapper userDtoMapper;
     private final RequestValidator requestValidator;
 
+    @Operation(
+            summary = "Obtener los usuarios",
+            description = "Obtiene todos los usuarios registrados",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de usuarios guardados"),
+                    @ApiResponse(responseCode = "500", description = "Error interno",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)))
+            }
+    )
     public Mono<ServerResponse> findAllUsers(ServerRequest serverRequest) {
         return ServerResponse.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
                 .body(userUseCase.findAllUsers(), User.class);
     }
 
+    @Operation(
+            summary = "Registrar nuevo usuario",
+            description = "Recibe un objeto CreateUserDto para guardarlo",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Error al validar datos requeridos",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "500", description = "Error interno",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)))
+            }
+    )
     public Mono<ServerResponse> saveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CreateUserDto.class)
                 .flatMap(requestValidator::validate)                        // Validación genérica
