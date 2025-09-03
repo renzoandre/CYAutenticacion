@@ -1,10 +1,10 @@
-# Proyecto Base Implementando Clean Architecture
+# Implementacion del microservicio AUTENTICACION
 
 ## Antes de Iniciar
 
-Empezaremos por explicar los diferentes componentes del proyectos y partiremos de los componentes externos, continuando con los componentes core de negocio (dominio) y por último el inicio y configuración de la aplicación.
+Empezaremos por explicar los diferentes componentes del proyectos y partiremos de los componentes externos, continuando con los componentes core de negocio (dominio) y por ï¿½ltimo el inicio y configuraciï¿½n de la aplicaciï¿½n.
 
-Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/bancolombia-tech/clean-architecture-aislando-los-detalles-4f9530f35d7a)
+Lee el artï¿½culo [Clean Architecture ï¿½ Aislando los detalles](https://medium.com/bancolombia-tech/clean-architecture-aislando-los-detalles-4f9530f35d7a)
 
 # Arquitectura
 
@@ -12,11 +12,11 @@ Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/
 
 ## Domain
 
-Es el módulo más interno de la arquitectura, pertenece a la capa del dominio y encapsula la lógica y reglas del negocio mediante modelos y entidades del dominio.
+Es el mï¿½dulo mï¿½s interno de la arquitectura, pertenece a la capa del dominio y encapsula la lï¿½gica y reglas del negocio mediante modelos y entidades del dominio.
 
 ## Usecases
 
-Este módulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lógica de aplicación y reacciona a las invocaciones desde el módulo de entry points, orquestando los flujos hacia el módulo de entities.
+Este mï¿½dulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lï¿½gica de aplicaciï¿½n y reacciona a las invocaciones desde el mï¿½dulo de entry points, orquestando los flujos hacia el mï¿½dulo de entities.
 
 ## Infrastructure
 
@@ -24,9 +24,9 @@ Este módulo gradle perteneciente a la capa del dominio, implementa los casos de 
 
 En el apartado de helpers tendremos utilidades generales para los Driven Adapters y Entry Points.
 
-Estas utilidades no están arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
-genéricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
-basadas en el patrón de diseño [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
+Estas utilidades no estï¿½n arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
+genï¿½ricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
+basadas en el patrï¿½n de diseï¿½o [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
 
 Estas clases no puede existir solas y debe heredarse su compartimiento en los **Driven Adapters**
 
@@ -38,10 +38,72 @@ interactuar.
 
 ### Entry Points
 
-Los entry points representan los puntos de entrada de la aplicación o el inicio de los flujos de negocio.
+Los entry points representan los puntos de entrada de la aplicaciï¿½n o el inicio de los flujos de negocio.
 
 ## Application
 
-Este módulo es el más externo de la arquitectura, es el encargado de ensamblar los distintos módulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automática, inyectando en éstos instancias concretas de las dependencias declaradas. Además inicia la aplicación (es el único módulo del proyecto donde encontraremos la función “public static void main(String[] args)”.
+Este mï¿½dulo es el mï¿½s externo de la arquitectura, es el encargado de ensamblar los distintos mï¿½dulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automï¿½tica, inyectando en ï¿½stos instancias concretas de las dependencias declaradas. Ademï¿½s inicia la aplicaciï¿½n (es el ï¿½nico mï¿½dulo del proyecto donde encontraremos la funciï¿½n ï¿½public static void main(String[] args)ï¿½.
 
 **Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
+
+# Ejecutar la aplicaciÃ³n
+`Java 21`
+
+Seguir los siguientes pasos para levantar el avance de la aplicaciÃ³n.   
+
+## Github
+
+El avance se encuentra en la rama **feature/hu01-user** del repositorio: https://github.com/renzoandre/CYAutenticacion.
+
+La url exacta es: https://github.com/renzoandre/CYAutenticacion/tree/feature/hu01-user#
+
+## Credenciales de BD
+
+Las credenciales aÃºn estan en duro en el archivo **application.yaml**.
+
+## Levantar docker
+Existe el archivo **docker-compose.yml** con la configuraciÃ³n para tener la base de datos en un contendor docker.
+
+EL archivo se encuentra en la carpeta **/database** donde se ubicarÃ¡ para ejecutar el siguiente comando.
+
+```
+docker-compose up -d
+```
+
+## Probar con Postman
+Se tiene implementado 3 end point:
+
+### Crear nuevo usuario
+Se usarÃ¡ la siguiente peticion POST: http://localhost:8080/api/v1/user
+
+```
+{
+    "name": "Felipe",
+    "lastName1": "Lozada",
+    "lastName2": "Lozano",
+    "birthDate": "2010-02-01",
+    "address": "Direccion de felipe",
+    "phone": "111222333",
+    "email": "felipe@email.com",
+    "baseSalary": 10000
+}
+```
+### Listar todos los usuarios
+Se usarÃ¡ la siguiente peticion GET: http://localhost:8080/api/v1/users
+
+### Actualizar usuario
+Se usarÃ¡ la siguiente peticion PATCH: http://localhost:8080/api/v1/user
+
+```
+{
+    "id": "uuid generado anteriormente",
+    "name": "Felipe Modificado",
+    "lastName1": "Lozada",
+    "lastName2": "Lozano",
+    "birthDate": "2010-02-01",
+    "address": "Direccion de felipe",
+    "phone": "111222333",
+    "email": "felipe@email.com",
+    "baseSalary": 10000
+}
+```
