@@ -35,7 +35,7 @@ public class RouterRest {
                     operation = @Operation(
                             operationId = "saveUser",
                             summary = "Registrar nuevo usuario",
-                            description = "Recibe un objeto CreateUserDto para guardarlo",
+                            description = "Recibe un objeto CreateUserDto para registrarlo",
                             requestBody = @RequestBody(
                                     required = true,
                                     description = "Datos del usuario a registrar",
@@ -56,10 +56,8 @@ public class RouterRest {
             )
     })
     public RouterFunction<ServerResponse> routerFunction() {
-
-        return route(POST(userPathsConfig.getUser()), userHandler::saveUser)
-                .andRoute(GET(userPathsConfig.getUsers()), userHandler::findAllUsers)
-                .andRoute(PATCH(userPathsConfig.getUser()), userHandler::updateUser);
+        return route(POST(userPathsConfig.getUser()), userHandler::saveUser);
+                //.andRoute(GET(userPathsConfig.getUsers()), userHandler::findAllUsers);
     }
 
 }

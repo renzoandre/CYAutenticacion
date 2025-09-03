@@ -12,7 +12,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -34,17 +33,6 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
          *  Or using mapper.map with the class of the object model
          */
         super(repository, mapper, userEntity -> mapper.map(userEntity, User.class));
-    }
-
-    @Transactional
-    @Override
-    public Flux<User> findAllUsers() {
-        log.info("UserReactiveRepositoryAdapter findAllUsers");
-        return super.findAll()
-                .onErrorMap(TransientDataAccessResourceException.class,
-                        ex -> new DatabaseUnavailableException("Base de datos no disponible"))
-                .onErrorMap(Exception.class,
-                        ex -> new RuntimeException("Error inesperado al guardar usuario", ex));
     }
 
     @Transactional
@@ -75,16 +63,4 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                         ex -> new RuntimeException("Error inesperado al guardar usuario", ex));
     }
 
-    @Transactional
-    @Override
-    public Mono<User> updateUser(User user) {
-        log.info("UserReactiveRepositoryAdapter updateUser" + user.toString());
-        return super.save(user)
-                .onErrorMap(DataIntegrityViolationException.class,
-                        ex -> new DataValidationException("Integridad de datos inválidos"))
-                .onErrorMap(TransientDataAccessResourceException.class,
-                        ex -> new DatabaseUnavailableException("Base de datos no disponible"))
-                .onErrorMap(Exception.class,
-                        ex -> new RuntimeException("Error inesperado al actualizar usuario", ex));
-    }
 }

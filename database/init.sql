@@ -1,3 +1,6 @@
+CREATE DATABASE db_cy_autenticacion_d;
+
+
 CREATE TABLE "public"."users" (
                                   "id" uuid NOT NULL DEFAULT gen_random_uuid(),
                                   "name" varchar NOT NULL,

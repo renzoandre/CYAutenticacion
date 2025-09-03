@@ -104,6 +104,7 @@ class RouterRestTest {
         assertEquals("/api/v1/user", userPathsConfig.getUser());
     }
 
+    /*
     @Test
     void shouldGetAllUsers() {
         when(userUseCase.findAllUsers()).thenReturn(Flux.just(user1, user2));
@@ -119,6 +120,7 @@ class RouterRestTest {
                     Assertions.assertThat(users.get(0).getId()).isEqualTo(UUID.fromString("6491deb6-c9f0-4a30-b942-367e29b23b86"));
                 });
     }
+    */
 
     @Test
     void shouldPostSaveuser() {

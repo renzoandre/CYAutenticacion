@@ -1,7 +1,6 @@
 package com.bootcamp.api;
 
 import com.bootcamp.api.dto.CreateUserDto;
-import com.bootcamp.api.dto.UpdateUserDto;
 import com.bootcamp.api.exception.ValidationDtoException;
 import com.bootcamp.api.helper.BuildApiResponseHelper;
 import com.bootcamp.api.mapper.UserDtoMapper;
@@ -31,24 +30,8 @@ public class Handler {
     private final RequestValidator requestValidator;
 
     @Operation(
-            summary = "Obtener los usuarios",
-            description = "Obtiene todos los usuarios registrados",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Lista de usuarios guardados"),
-                    @ApiResponse(responseCode = "500", description = "Error interno",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)))
-            }
-    )
-    public Mono<ServerResponse> findAllUsers(ServerRequest serverRequest) {
-        return ServerResponse.ok()
-                .contentType(MediaType.TEXT_EVENT_STREAM)
-                .body(userUseCase.findAllUsers(), User.class);
-    }
-
-    @Operation(
             summary = "Registrar nuevo usuario",
-            description = "Recibe un objeto CreateUserDto para guardarlo",
+            description = "Recibe un objeto CreateUserDto para registrarlo",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente"),
                     @ApiResponse(responseCode = "400", description = "Error al validar datos requeridos",
@@ -61,11 +44,11 @@ public class Handler {
     )
     public Mono<ServerResponse> saveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CreateUserDto.class)
-                .flatMap(requestValidator::validate)                        // Validación genérica
-                .map(userDtoMapper::toModel)                                // Mapear a dominio
-                .flatMap(userUseCase::saveUser)                             // Guardar
-                .map(userDtoMapper::toResponse)                             // Mapear a Dto
-                .flatMap(BuildApiResponseHelper::buildSuccess)              // Respuesta OK
+                .flatMap(requestValidator::validate)
+                .map(userDtoMapper::toModel)
+                .flatMap(userUseCase::saveUser)
+                .map(userDtoMapper::toResponse)
+                .flatMap(BuildApiResponseHelper::buildSuccess)
                 .onErrorResume(
                         ValidationDtoException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.BAD_REQUEST)
                 )
@@ -75,25 +58,6 @@ public class Handler {
                 .onErrorResume(
                         RuntimeException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.INTERNAL_SERVER_ERROR)
                 );
-    }
-
-    public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
-        serverRequest.bodyToMono(UpdateUserDto.class)
-                .flatMap(requestValidator::validate)                        // Validación genérica
-                .map(userDtoMapper::toModel)                                // Mapear a dominio
-                .flatMap(userUseCase::updateUser)                           // Actualizar
-                .map(userDtoMapper::toResponse)                             // Mapear a Dto
-                .flatMap(BuildApiResponseHelper::buildSuccess)              // Respuesta OK
-                .onErrorResume(
-                        ValidationDtoException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.BAD_REQUEST)
-                )
-                .onErrorResume(
-                        UserExistException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.CONFLICT)
-                )
-                .onErrorResume(
-                        RuntimeException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.INTERNAL_SERVER_ERROR)
-                );
-        return null;
     }
 
 }

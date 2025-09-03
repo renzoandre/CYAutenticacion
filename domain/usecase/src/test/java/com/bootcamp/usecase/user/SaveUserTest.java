@@ -27,7 +27,7 @@ public class SaveUserTest {
     }
 
     @Test
-    void registryUser_conUsuarioValidoYRolExistente_guardaUsuario() {
+    void registryUserTest() {
         String birthDateText = "2010-02-01";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -59,12 +59,36 @@ public class SaveUserTest {
                 .verifyComplete();
 
         // Verificar que el usuario se guardó
-        /*
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).saveUser(captor.capture());
         User userSaved = captor.getValue();
         assertEquals("Jose", userSaved.getName());
-        */
+    }
+
+    @Test
+    void saveUserExisteUserTest() {
+        String birthDateText = "2010-02-01";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        User user = User.builder()
+                .name("Renzo")
+                .lastName1("Condo")
+                .lastName2("Miranda")
+                .birthDate(LocalDate.parse(birthDateText, formatter))
+                .address("Direccion de felipe")
+                .phone("111222333")
+                .email("renzo@email.com")
+                .baseSalary(10000.00)
+                .active(false)
+                .build();
+
+        when(userRepository.findUserByEmail(user.getEmail()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(userUseCase.saveUser(user))
+                .expectError()
+                .verify();
+
     }
 
 }

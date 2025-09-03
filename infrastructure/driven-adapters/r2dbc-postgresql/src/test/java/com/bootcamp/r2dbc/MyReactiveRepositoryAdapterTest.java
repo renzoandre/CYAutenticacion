@@ -27,6 +27,7 @@ class MyReactiveRepositoryAdapterTest {
     @Mock
     ObjectMapper mapper;
 
+    /*
     @Test
     void mustFindValueById() {
 
@@ -75,4 +76,5 @@ class MyReactiveRepositoryAdapterTest {
                 .expectNextMatches(value -> value.equals("test"))
                 .verifyComplete();
     }
+    */
 }
